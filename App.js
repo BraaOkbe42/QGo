@@ -9,7 +9,7 @@ import VerifyCodeScreen from './src/components/VerifyCodeScreen';
 import BranchesPage from './src/components/BranchesPage'; // Adjust path
 import AppointmentsPage from './src/components/AppointmentsPage'; // Adjust path
 import BusinessOptionsPage from './src/components/BusinessOptionsPage'; 
-
+//ali
 
 const Stack = createStackNavigator();
 
