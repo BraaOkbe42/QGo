@@ -1,44 +1,155 @@
-import React from 'react';
+// import React from 'react';
+// import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+
+// const BusinessOptionsPage = ({ route, navigation }) => {
+//   const { businessName } = route.params; // Get the business name from the previous page
+
+//   // Navigate to BranchesPage when "Book an Appointment" is clicked
+//   const handleBookAppointment = () => {
+//     navigation.navigate('BranchesPage', { businessName });
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.title}>Options for {businessName}</Text>
+
+//       <TouchableOpacity
+//         style={styles.button}
+//         onPress={handleBookAppointment} // Navigate to BranchesPage
+//       >
+//         <Text style={styles.buttonText}>Book an Appointment</Text>
+//       </TouchableOpacity>
+
+//       <TouchableOpacity
+//         style={styles.button}
+//         onPress={() => alert('Opening hours of branches feature coming soon!')}
+//       >
+//         <Text style={styles.buttonText}>Opening Hours of Branches</Text>
+//       </TouchableOpacity>
+
+//       <TouchableOpacity
+//         style={styles.button}
+//         onPress={() => alert('Required documents feature coming soon!')}
+//       >
+//         <Text style={styles.buttonText}>Required Documents</Text>
+//       </TouchableOpacity>
+
+//       <TouchableOpacity
+//         style={styles.button}
+//         onPress={() => alert('Upload documents feature coming soon!')}
+//       >
+//         <Text style={styles.buttonText}>Upload Documents</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 20,
+//     justifyContent: 'center',
+//     backgroundColor: '#f8f9fa',
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: 'bold',
+//     textAlign: 'center',
+//     marginBottom: 30,
+//   },
+//   button: {
+//     backgroundColor: '#4caf50',
+//     padding: 15,
+//     borderRadius: 10,
+//     marginBottom: 15,
+//     alignItems: 'center',
+//   },
+//   buttonText: {
+//     color: '#fff',
+//     fontSize: 16,
+//     fontWeight: 'bold',
+//   },
+// });
+
+// export default BusinessOptionsPage;
+
+
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { LanguageContext } from '../context/LanguageContext';
+
+const translations = {
+  he: {
+    optionsFor: 'אפשרויות עבור',
+    bookAppointment: 'קבע פגישה',
+    openingHours: 'שעות פתיחה של הסניפים',
+    requiredDocuments: 'מסמכים נדרשים',
+    uploadDocuments: 'העלה מסמכים',
+  },
+  ar: {
+    optionsFor: 'خيارات ل',
+    bookAppointment: 'حجز موعد',
+    openingHours: 'ساعات عمل الفروع',
+    requiredDocuments: 'المستندات المطلوبة',
+    uploadDocuments: 'رفع المستندات',
+  },
+};
+
+const businessNameTranslations = {
+  he: {
+    'משרד פנים': 'משרד פנים', // Hebrew name
+    'משטרה': 'משטרה', // Hebrew name
+  },
+  ar: {
+    'משרד פנים': 'وزارة الداخلية',
+    'משטרה': 'الشرطة', // Arabic translation
+  },
+};
 
 const BusinessOptionsPage = ({ route, navigation }) => {
-  const { businessName } = route.params; // Get the business name from the previous page
+  const { language } = useContext(LanguageContext);
+  const t = translations[language];
+  const businessNameDict = businessNameTranslations[language];
 
-  // Navigate to BranchesPage when "Book an Appointment" is clicked
+  const { businessName } = route.params;
+  const translatedBusinessName = businessNameDict[businessName] || businessName; // Default to original name if no translation exists
+
   const handleBookAppointment = () => {
-    navigation.navigate('BranchesPage', { businessName });
+    navigation.navigate('BranchesPage', { businessName: translatedBusinessName });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Options for {businessName}</Text>
+      <Text style={styles.title}>
+        {t.optionsFor} {translatedBusinessName}
+      </Text>
 
       <TouchableOpacity
         style={styles.button}
-        onPress={handleBookAppointment} // Navigate to BranchesPage
+        onPress={handleBookAppointment}
       >
-        <Text style={styles.buttonText}>Book an Appointment</Text>
+        <Text style={styles.buttonText}>{t.bookAppointment}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => alert('Opening hours of branches feature coming soon!')}
+        onPress={() => alert(t.openingHours)}
       >
-        <Text style={styles.buttonText}>Opening Hours of Branches</Text>
+        <Text style={styles.buttonText}>{t.openingHours}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => alert('Required documents feature coming soon!')}
+        onPress={() => alert(t.requiredDocuments)}
       >
-        <Text style={styles.buttonText}>Required Documents</Text>
+        <Text style={styles.buttonText}>{t.requiredDocuments}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => alert('Upload documents feature coming soon!')}
+        onPress={() => alert(t.uploadDocuments)}
       >
-        <Text style={styles.buttonText}>Upload Documents</Text>
+        <Text style={styles.buttonText}>{t.uploadDocuments}</Text>
       </TouchableOpacity>
     </View>
   );
