@@ -190,10 +190,15 @@ const translations = {
 // Translations for business and branch names
 const businessNameTranslations = {
   'משרד פנים': 'وزارة الداخلية',
+  'משטרה': 'الشرطة',
+
 };
 
 const branchNameTranslations = {
   'סניף באר שבע קקל 554': 'فرع بئر السبع ككل 554',
+  'רהט שכונה 16': 'رهط حارة 16',
+  'באר שבע': 'بئر السبع',
+
 };
 
 const BranchesPage = ({ route, navigation }) => {
