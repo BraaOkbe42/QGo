@@ -283,6 +283,8 @@ const branchNameTranslations = {
 
 const businessNameTranslations = {
   'משרד הפנים': 'وزارة الداخلية',
+  'דואר ישראל' :'بريد اسرائيل'
+
 };
 
 const AppointmentsPage = ({ route }) => {

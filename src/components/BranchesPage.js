@@ -35,7 +35,6 @@ const translations = {
 // Translations for business and branch names
 const businessNameTranslations = {
   'משרד הפנים': 'وزارة الداخلية',
-  'משטרה': 'الشرطة',
   'דואר ישראל' :'بريد اسرائيل'
 };
 
