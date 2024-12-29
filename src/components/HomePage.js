@@ -1,64 +1,114 @@
-// import React, { useEffect, useState } from 'react';
-// import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+// import React, { useEffect, useState, useContext } from 'react';
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   FlatList,
+//   TouchableOpacity,
+//   Dimensions,
+//   TextInput,
+// } from 'react-native';
 // import { firestore } from '../services/firebase';
 // import { collection, getDocs } from 'firebase/firestore';
+// import { LanguageContext } from '../context/LanguageContext';
+
+// const translations = {
+//   ar: {
+//     title: 'مرحبًا بكم في دليل الأعمال',
+//     searchPlaceholder: 'ابحث عن نشاط تجاري',
+//     error: 'حدث خطأ أثناء تحميل الشركات. يرجى المحاولة لاحقًا.',
+//     businessNames: {
+//       'משטרה': 'الشرطة',
+//       'משרד פנים': 'وزارة الدخلية',
+//       'דואר ישראל': 'بريد اسرائيل',
+//     },
+//   },
+//   he: {
+//     title: 'ברוכים הבאים למדריך העסקים',
+//     searchPlaceholder: 'חפש עסק',
+//     error: 'אירעה שגיאה בעת טעינת העסקים. אנא נסה שוב מאוחר יותר.',
+//   },
+// };
 
 // const HomePage = ({ navigation }) => {
 //   const [businesses, setBusinesses] = useState([]);
+//   const [filteredBusinesses, setFilteredBusinesses] = useState([]);
+//   const [searchTerm, setSearchTerm] = useState('');
 //   const [error, setError] = useState('');
+//   const { language } = useContext(LanguageContext);
+
+//   const t = translations[language] || translations.he; // Default to Hebrew if language is not set
 
 //   useEffect(() => {
 //     const fetchBusinesses = async () => {
 //       try {
 //         const businessesCollection = collection(firestore, 'businesses');
 //         const snapshot = await getDocs(businessesCollection);
-//         const businessList = snapshot.docs.map(doc => ({
+//         const businessList = snapshot.docs.map((doc) => ({
 //           id: doc.id,
 //           ...doc.data(),
 //         }));
 
-//         // Filter out duplicate business names
+//         // Remove duplicates by business name
 //         const uniqueBusinesses = Array.from(
-//           new Map(businessList.map(item => [item.business_name, item])).values()
+//           new Map(businessList.map((item) => [item.business_name, item])).values()
 //         );
 
 //         console.log('Fetched unique businesses:', uniqueBusinesses);
 //         setBusinesses(uniqueBusinesses);
+//         setFilteredBusinesses(uniqueBusinesses); // Initialize filtered list
 //       } catch (err) {
 //         console.error('Error fetching businesses:', err.message);
-//         setError('An error occurred while fetching businesses. Please try again later.');
+//         setError(t.error);
 //       }
 //     };
 
 //     fetchBusinesses();
-//   }, []);
+//   }, [t.error]);
 
+//   const translateBusinessName = (name) => {
+//     if (language === 'ar') {
+//       return t.businessNames[name] || name; // Translate to Arabic or keep the original
+//     }
+//     return name; // Display Hebrew by default
+//   };
+
+//   const handleSearch = (text) => {
+//     setSearchTerm(text);
+//     const filtered = businesses.filter((business) =>
+//       translateBusinessName(business.business_name).toLowerCase().includes(text.toLowerCase())
+//     );
+//     setFilteredBusinesses(filtered);
+//   };
 
 //   const handleBusinessPress = (businessName) => {
 //     navigation.navigate('BusinessOptionsPage', { businessName });
 //   };
-  
 
 //   const renderBusiness = ({ item }) => (
 //     <TouchableOpacity
 //       style={styles.businessCard}
 //       onPress={() => handleBusinessPress(item.business_name)}
 //     >
-//       <Text style={styles.businessName}>{item.business_name}</Text>
+//       <Text style={styles.businessName}>{translateBusinessName(item.business_name)}</Text>
 //     </TouchableOpacity>
 //   );
-  
-
-  
 
 //   return (
 //     <View style={styles.container}>
-//       <Text style={styles.title}>Welcome to the Business Directory</Text>
+//       <Text style={styles.title}>{t.title}</Text>
+//       {/* Search Bar */}
+//       <TextInput
+//         style={styles.searchBar}
+//         placeholder={t.searchPlaceholder}
+//         value={searchTerm}
+//         onChangeText={handleSearch}
+//       />
 //       {error ? <Text style={styles.error}>{error}</Text> : null}
 //       <FlatList
-//         data={businesses}
+//         data={filteredBusinesses}
 //         renderItem={renderBusiness}
-//         keyExtractor={item => item.id}
+//         keyExtractor={(item) => item.id}
 //         numColumns={2}
 //         columnWrapperStyle={styles.row}
 //         contentContainerStyle={styles.listContainer}
@@ -77,6 +127,14 @@
 //     fontSize: 24,
 //     fontWeight: 'bold',
 //     textAlign: 'center',
+//     marginBottom: 20,
+//   },
+//   searchBar: {
+//     height: 40,
+//     borderColor: '#ccc',
+//     borderWidth: 1,
+//     borderRadius: 5,
+//     paddingHorizontal: 10,
 //     marginBottom: 20,
 //   },
 //   listContainer: {
@@ -112,8 +170,44 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+  TextInput,
+  Image,
+} from 'react-native';
 import { firestore } from '../services/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { LanguageContext } from '../context/LanguageContext';
@@ -121,25 +215,37 @@ import { LanguageContext } from '../context/LanguageContext';
 const translations = {
   ar: {
     title: 'مرحبًا بكم في دليل الأعمال',
+    searchPlaceholder: 'ابحث عن نشاط تجاري',
     error: 'حدث خطأ أثناء تحميل الشركات. يرجى المحاولة لاحقًا.',
     businessNames: {
       'משטרה': 'الشرطة',
-      'משרד פנים': 'وزارة الدخلية',
-      'דואר ישראל': 'مكتب البريد',
+      'משרד הפנים': 'وزارة الداخلية',
+      'דואר ישראל': 'بريد اسرائيل',
     },
   },
   he: {
     title: 'ברוכים הבאים למדריך העסקים',
+    searchPlaceholder: 'חפש עסק',
     error: 'אירעה שגיאה בעת טעינת העסקים. אנא נסה שוב מאוחר יותר.',
   },
 };
 
+// Map business names to their respective image files in src/media
+const businessImages = {
+  'משטרה': require('../media/business1.png'),
+  'משרד הפנים': require('../media/business1.png'),
+  'דואר ישראל': require('../media/business2.png'),
+};
+
+
 const HomePage = ({ navigation }) => {
   const [businesses, setBusinesses] = useState([]);
+  const [filteredBusinesses, setFilteredBusinesses] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
   const { language } = useContext(LanguageContext);
 
-  const t = translations[language] || translations.he; // Default to Hebrew if language is not set
+  const t = translations[language] || translations.he;
 
   useEffect(() => {
     const fetchBusinesses = async () => {
@@ -151,10 +257,13 @@ const HomePage = ({ navigation }) => {
           ...doc.data(),
         }));
 
-        console.log('Fetched businesses:', businessList);
-        setBusinesses(businessList);
+        const uniqueBusinesses = Array.from(
+          new Map(businessList.map((item) => [item.business_name, item])).values()
+        );
+
+        setBusinesses(uniqueBusinesses);
+        setFilteredBusinesses(uniqueBusinesses);
       } catch (err) {
-        console.error('Error fetching businesses:', err.message);
         setError(t.error);
       }
     };
@@ -164,9 +273,17 @@ const HomePage = ({ navigation }) => {
 
   const translateBusinessName = (name) => {
     if (language === 'ar') {
-      return t.businessNames[name] || name; // Translate to Arabic or keep the original
+      return t.businessNames[name] || name;
     }
-    return name; // Display Hebrew by default
+    return name;
+  };
+
+  const handleSearch = (text) => {
+    setSearchTerm(text);
+    const filtered = businesses.filter((business) =>
+      translateBusinessName(business.business_name).toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredBusinesses(filtered);
   };
 
   const handleBusinessPress = (businessName) => {
@@ -178,16 +295,29 @@ const HomePage = ({ navigation }) => {
       style={styles.businessCard}
       onPress={() => handleBusinessPress(item.business_name)}
     >
+      {/* Dynamically load the image */}
+      <Image
+        source={businessImages[item.business_name] || require('../media/business1.png')} 
+        style={styles.businessImage}
+        resizeMode="cover"
+      />
       <Text style={styles.businessName}>{translateBusinessName(item.business_name)}</Text>
     </TouchableOpacity>
   );
+  
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{t.title}</Text>
+      <TextInput
+        style={styles.searchBar}
+        placeholder={t.searchPlaceholder}
+        value={searchTerm}
+        onChangeText={handleSearch}
+      />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <FlatList
-        data={businesses}
+        data={filteredBusinesses}
         renderItem={renderBusiness}
         keyExtractor={(item) => item.id}
         numColumns={2}
@@ -199,6 +329,13 @@ const HomePage = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  businessImage: {
+    width: '100%', // Maintain the width as full width of the card
+    height: 150, // Increase the height for a longer image
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  
   container: {
     flex: 1,
     padding: 20,
@@ -210,6 +347,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
+  searchBar: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
   listContainer: {
     alignItems: 'center',
   },
@@ -218,14 +363,21 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   businessCard: {
-    backgroundColor: '#4caf50',
-    padding: 20,
+    backgroundColor: '#f8f9fa',
+    padding: 10,
     borderRadius: 10,
     width: Dimensions.get('window').width * 0.45,
     alignItems: 'center',
+    marginBottom: 15,
+  },
+  businessImage: {
+    width: '100%',
+    height: 120,
+    borderRadius: 10,
+    marginBottom: 10,
   },
   businessName: {
-    color: '#fff',
+    color: '#333',
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',

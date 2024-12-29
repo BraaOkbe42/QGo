@@ -282,7 +282,7 @@ const branchNameTranslations = {
 };
 
 const businessNameTranslations = {
-  'משרד פנים': 'وزارة الداخلية',
+  'משרד הפנים': 'وزارة الداخلية',
 };
 
 const AppointmentsPage = ({ route }) => {
